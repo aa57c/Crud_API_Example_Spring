@@ -1,68 +1,71 @@
 package com.example.crud_api.student;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/v1")
 public class StudentResource {
 
-    private final StudentRepository studentRepository;
+    private final StudentService studentService;
 
-    public StudentResource(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    public StudentResource(StudentService studentService) {
+        this.studentService = studentService;
     }
 
     @GetMapping("/students")
-    public List<Student> retrieveAllStudents() {
-        return studentRepository.findAll();
+    public ResponseEntity<List<Student>> retrieveAllStudents() {
+        List<Student> students = studentService.findAllStudents();
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping("/students/{id}")
-    public Student retrieveStudent(@PathVariable long id) {
-        Optional<Student> student = studentRepository.findById(id);
+    public ResponseEntity<Student> retrieveStudent(@PathVariable Long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Student ID must be a positive number");
+        }
 
-        if (student.isEmpty())
-            throw new StudentNotFoundException("id-" + id);
+        Student student = studentService.findStudentById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
 
-        return student.get();
-    }
-
-    @DeleteMapping("/students/{id}")
-    public void deleteStudent(@PathVariable long id) {
-        studentRepository.deleteById(id);
+        return ResponseEntity.ok(student);
     }
 
     @PostMapping("/students")
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        var savedStudent = studentRepository.save(student);
+    public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student) {
+        Student savedStudent = studentService.createStudent(student);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedStudent.getId())
                 .toUri();
 
-        return ResponseEntity.created(location)
-                .build();
-
+        return ResponseEntity.created(location).body(savedStudent);
     }
 
     @PutMapping("/students/{id}")
-    public ResponseEntity<Student> updateStudent(@RequestBody Student student,
-                                                          @PathVariable long id) {
+    public ResponseEntity<Student> updateStudent(@Valid @RequestBody Student student,
+                                                 @PathVariable Long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Student ID must be a positive number");
+        }
 
-        Optional<Student> studentDetails = studentRepository.findById(id);
+        Student updatedStudent = studentService.updateStudent(id, student);
+        return ResponseEntity.ok(updatedStudent);
+    }
 
-        if (studentDetails.isEmpty())
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/students/{id}")
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Student ID must be a positive number");
+        }
 
-        student.setId(id);
-        studentRepository.save(student);
-        return ResponseEntity.noContent()
-                .build();
+        studentService.deleteStudent(id);
+        return ResponseEntity.noContent().build();
     }
 }
