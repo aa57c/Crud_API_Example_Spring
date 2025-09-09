@@ -11,7 +11,6 @@ This project demonstrates a comprehensive implementation of a CRUD (Create, Read
 - **Complete CRUD Operations** - Create, retrieve, update, and delete student records
 - **Data Validation** - Comprehensive input validation with custom error messages
 - **Exception Handling** - Global exception handling with structured error responses
-- **API Documentation** - Interactive Swagger/OpenAPI documentation
 - **Audit Trail** - Automatic tracking of creation and modification timestamps
 - **Optimistic Locking** - Version-based concurrency control
 - **Status Management** - Student lifecycle management (Active, Suspended, Graduated, Withdrawn)
