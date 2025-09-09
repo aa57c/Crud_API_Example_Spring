@@ -1,6 +1,7 @@
 package com.example.crud_api.exception;
 
 import com.example.crud_api.student.StudentNotFoundException;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
+@Hidden // This annotation excludes the entire class from OpenAPI documentation
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(StudentNotFoundException.class)
