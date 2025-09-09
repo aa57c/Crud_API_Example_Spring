@@ -12,6 +12,7 @@ This project demonstrates a comprehensive implementation of a CRUD (Create, Read
 - **Data Validation** - Comprehensive input validation with custom error messages
 - **Exception Handling** - Global exception handling with structured error responses
 - **Audit Trail** - Automatic tracking of creation and modification timestamps
+- **API Documentation** - Interactive Swagger/OpenAPI documentation
 - **Optimistic Locking** - Version-based concurrency control
 - **Status Management** - Student lifecycle management (Active, Suspended, Graduated, Withdrawn)
 - **Database Integration** - JPA/Hibernate with H2 in-memory database
